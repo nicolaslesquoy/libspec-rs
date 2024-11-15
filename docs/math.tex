@@ -1,0 +1,33 @@
+\documentclass[12pt, a4paper]{article}
+% General options
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setdefaultlanguage{french} % polyglossia
+\usepackage{libertine}
+%% Math packages
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{mathrsfs}
+% \usepackage{mathtools}
+\usepackage[g]{esvect} % For vector arrows
+\usepackage{esint} % For improved integral symbols
+\usepackage{stmaryrd}
+\usepackage{unicode-math}
+%% Misc.
+\usepackage{graphicx}
+\usepackage{hyperref}
+%% Metadata
+\title{Mathematical formulas \& Draft}
+\author{Nicolas Lesquoy}
+\date{Last update: \today}
+
+\begin{document}
+\maketitle
+
+\begin{equation}
+    \Gamma(n) = (n-1)!\quad \Gamma(-z) = -\frac{\pi}{z\Gamma(z)\sin(\pi z)}\; \text{for } z \notin \mathbb{Z}
+\end{equation}
+\begin{equation}
+    \frac{1}{\Gamma(z)} = \sum_{k=1}^{26}a_k z^k + \varepsilon(z)
+\end{equation}
+\end{document}

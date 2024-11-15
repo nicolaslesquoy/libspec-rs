@@ -1,6 +1,21 @@
-/// Helper functions
+/// This module contains the implementation of the factorial function using the prime swing algorithm.
+/// Copyright (c) Peter Luschny, 2000-2017. The original code is distributed under the CC-BY-SA 3.0 license. Please see the original code at `https://www.luschny.de/math/factorial/FastFactorialFunctions.htm` for more information.
+/// The original code has been modified to fit the needs of this project by adding helper functions and implementing functions provided by external libraries in the original code.
 
-pub fn sieve(start: u64, end: u64) -> Vec<u64> {
+/// Helper functions for prime number generation, bit calculation, and fast exponentiation
+
+/// Sieve of Eratosthenes implementation to generate prime numbers between start and end
+/// The function returns a vector of prime numbers between start and end
+/// 
+/// # Arguments
+/// 
+/// * `start` - The starting number of the range
+/// * `end` - The ending number of the range
+/// 
+/// # Returns
+/// 
+/// * A vector of prime numbers between start and end
+fn sieve(start: u64, end: u64) -> Vec<u64> {
     let mut sieve_array = vec![true; (end + 1) as usize];
     sieve_array[0] = false;
     sieve_array[1] = false;
@@ -25,15 +40,35 @@ pub fn sieve(start: u64, end: u64) -> Vec<u64> {
     return primes;
 }
 
+/// Calculate the number of bits in the binary representation of a number
+/// 
+/// # Arguments
+/// 
+/// * `n` - The number whose bits are to be calculated
+/// 
+/// # Returns
+/// 
+/// * The number of bits in the binary representation of the number
 fn calculate_bits(n: u64) -> u64 {
     let binary_string = format!("{:b}", n); // Convert n to binary string
     let sum_of_bits: u64 = binary_string
         .chars()
         .map(|c| c.to_digit(10).unwrap() as u64)
         .sum();
-    n - sum_of_bits
+    return n - sum_of_bits
 }
 
+/// Fast exponentiation algorithm to calculate the result of a^b mod m
+/// 
+/// # Arguments
+/// 
+/// * `base` - The base of the exponentiation
+/// * `exponent` - The exponent of the exponentiation
+/// * `modulus` - The modulus of the exponentiation
+/// 
+/// # Returns
+/// 
+/// * The result of the exponentiation a^b mod m
 fn fast_exponentiation(base: u64, exponent: u64, modulus: u64) -> u64 {
     let mut result = 1;
     let mut base = base % modulus;
@@ -48,12 +83,14 @@ fn fast_exponentiation(base: u64, exponent: u64, modulus: u64) -> u64 {
     return result;
 }
 
-/// Actual implementation of the factorial function using the prime swing algorithm
+/// Actual implementation of the factorial function using the prime swing algorithm based on the SageMath implementation by Peter Luschny
 
-pub fn swing(n: u64, primes: Vec<u64>) -> u64 {
+// TODO : Add proper documentation for these intermediate functions
+
+fn swing(n: u64, primes: &[u64]) -> u64 {
     let mut factors: Vec<u64> = Vec::new();
     let mut q: u64;
-    for prime in primes {
+    for &prime in primes {
         if prime > n {
             break;
         }
@@ -69,27 +106,33 @@ pub fn swing(n: u64, primes: Vec<u64>) -> u64 {
     return product;
 }
 
-// TODO: rewrite this part to avoid recursion.
-pub fn odd_factorial(n: u64, primes: Vec<u64>) -> u64 {
+fn odd_factorial(n: u64, primes: &[u64]) -> u64 {
     if n < 2 {
         return 1;
     } else {
-        let half_factorial = odd_factorial(n / 2, primes.clone());
-        let swing_factor = swing(n, primes);
-        return fast_exponentiation(half_factorial, 2, u64::MAX) * swing_factor;
+        return fast_exponentiation(odd_factorial(n / 2, primes), 2, u64::MAX) * swing(n, &primes);
     }
 }
 
-pub fn eval(n: u64) -> u64 {
+fn eval(n: u64) -> u64 {
     if n < 10 {
         return (2..=n).product();
     } else {
         let bits = calculate_bits(n);
         let primes = sieve(2, n + 1);
-        return fast_exponentiation(2 * odd_factorial(n, primes), bits, u64::MAX);
+        return fast_exponentiation(2 * odd_factorial(n, &primes), bits, u64::MAX);
     }
 }
 
+/// Calculate the factorial of a number using the prime swing algorithm
+/// 
+/// # Arguments
+/// 
+/// * `n` - The number whose factorial is to be calculated
+/// 
+/// # Returns
+/// 
+/// * The factorial of the number
 pub fn factorial(n: u64) -> u64 {
     return eval(n);
 }
